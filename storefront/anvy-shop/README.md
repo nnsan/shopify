@@ -34,3 +34,8 @@ brew services stop mongodb-community@4.2
 
 ps aux | grep -v grep | grep mongod
 
+## Style
+
+Bootstrap v4.5
+
+[Color palette](https://www.millionshade.com/color-palette-0036/)
