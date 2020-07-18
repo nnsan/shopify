@@ -29,8 +29,6 @@
     "express": "^4.15.2",
     "faker": "^4.1.0",
     "jquery": "^3.5.1",
-    "mongodb-client-encryption": "^1.1.0",
-    "mongoose": "^5.9.22",
     "popper.js": "^1.16.1",
     "request": "~2.79.0",
     "rxjs": "~6.5.4",
