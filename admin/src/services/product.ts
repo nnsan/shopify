@@ -1,6 +1,6 @@
 import { injectable, inject } from 'inversify';
 
-import { Product as IProduct, Server } from '../interfaces';
+import { IProduct, IRouter } from '../interfaces';
 import SERVICE_IDENTIFIER from '../constant/identifiers';
 
 import { Product as ProductModel} from '../models'
@@ -8,12 +8,12 @@ import { Product as ProductModel} from '../models'
 @injectable()
 export class Product implements IProduct {
 
-    constructor(@inject(SERVICE_IDENTIFIER.SERVER) public server: Server) {}
+    constructor(@inject(SERVICE_IDENTIFIER.ROUTER) public router: IRouter) {}
 
     defineRoutes() {
-        this.server.get('/product', async (req, res) => {
+        this.router.get('/product', async (ctx, next) => {
             const data = await this.getAll();
-            res.json(data);
+            ctx.body = data;
         });
     }
 

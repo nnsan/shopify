@@ -1,6 +1,6 @@
 const SERVICE_IDENTIFIER = {
     PRODUCT: Symbol.for('Product'),
-    SERVER: Symbol.for('Server')
+    ROUTER: Symbol.for('Router')
 };
 
 export default SERVICE_IDENTIFIER

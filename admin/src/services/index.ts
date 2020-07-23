@@ -1,3 +1,3 @@
 export { Product } from './product';
-export { Server } from './server';
+export { Router } from './router';
 export { importData } from './import-data';

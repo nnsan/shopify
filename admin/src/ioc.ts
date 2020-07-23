@@ -2,22 +2,22 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 
 import {
-    Product as IProduct,
-    Server as IServer
+    IProduct,
+    IRouter
 } from './interfaces';
 
 import {
     Product,
-    Server
+    Router
 } from './services'
 
 import SERVICE_IDENTIFIER from './constant/identifiers';
 
 const container = new Container();
 
-console.log('ioc container');
 
 container.bind<IProduct>(SERVICE_IDENTIFIER.PRODUCT).to(Product);
-container.bind<IServer>(SERVICE_IDENTIFIER.SERVER).to(Server).inSingletonScope();
+container.bind<IRouter>(SERVICE_IDENTIFIER.ROUTER).to(Router).inSingletonScope();
 
-export default container
+
+export default container;
