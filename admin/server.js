@@ -21,7 +21,6 @@ const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY } = process.env;
 function run() {
     const server = new koa();
 
-
     server.use(session({secure: true, sameSite: 'none'}, server));
     server.keys = [SHOPIFY_API_SECRET_KEY];
     server.use(
@@ -31,7 +30,13 @@ function run() {
             scopes: ['read_products', 'write_products'],
             afterAuth(ctx) {
                 const { shop, accessToken } = ctx.session;
-                console.log(shop, accessToken);
+
+                ctx.cookies.set('shopOrigin', shop, {
+                    httpOnly: false,
+                    secure: true,
+                    sameSite: 'none'
+                });
+                ctx.cookies.set('accessToken', accessToken);
 
                 ctx.redirect('/');
             }

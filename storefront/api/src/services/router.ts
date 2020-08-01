@@ -9,19 +9,19 @@ export class Router implements IRouter {
 
     constructor() {}
 
-    get(path: string, handle: (ctx, next) => void) {
+    get(path: string, handle: (ctx: any, next: any) => void) {
         this.router.get(path, handle);
     }
 
-    post(path: string, handle: (ctx, next) => void) {
+    post(path: string, handle: (ctx: any, next: any) => void) {
         this.router.get(path, handle);
     }
 
-    put(path: string, handle: (ctx, next) => void) {
+    put(path: string, handle: (ctx: any, next: any) => void) {
         this.router.get(path, handle);
     }
 
-    delete(path: string, handle: (ctx, next) => void) {
+    delete(path: string, handle: (ctx: any, next: any) => void) {
         this.router.get(path, handle);
     }
 }

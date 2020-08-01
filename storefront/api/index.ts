@@ -1,14 +1,16 @@
 import SERVICE_IDENTIFIER from './src/constant/identifiers';
 import container from './src/ioc';
 import { IProduct } from './src/interfaces';
-import mongoose from 'mongoose';
 import { importData } from './src/services';
 
-import bodyParser from 'koa-bodyparser';
-import logger from 'koa-logger';
-import helmet from 'koa-helmet';
-import cors from '@koa/cors';
-import Koa from 'koa';
+const mongoose = require('mongoose');
+const bodyParser = require('koa-logger');
+const logger = require('koa-logger');
+const helmet = require('koa-helmet');
+const cors = require('@koa/cors');
+const Koa = require('koa');
+
+const port = parseInt(process.env.PORT as string, 10) || 3001;
 
 function run() {
     const middleWare = container.get<any>(SERVICE_IDENTIFIER.ROUTER);
@@ -29,7 +31,8 @@ function run() {
             .use(cors())
             .use(middleWare.router.routes());
 
-        server.listen('3001', async function () {
+        server.listen(port, async function () {
+            console.log(`The server is runing at port ${port}`);
             await importData();
         });
     });
