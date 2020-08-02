@@ -42,7 +42,7 @@ function run() {
             }
         })
     );
-    server.use(graphQLProxy({version: ApiVersion.October19}));
+    server.use(graphQLProxy({version: ApiVersion.July20}));
     server.use(verifyRequest());
     server.use(async (ctx) => {
         await handle(ctx.req, ctx.res);

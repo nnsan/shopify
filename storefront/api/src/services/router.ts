@@ -14,14 +14,14 @@ export class Router implements IRouter {
     }
 
     post(path: string, handle: (ctx: any, next: any) => void) {
-        this.router.get(path, handle);
+        this.router.post(path, handle);
     }
 
     put(path: string, handle: (ctx: any, next: any) => void) {
-        this.router.get(path, handle);
+        this.router.put(path, handle);
     }
 
     delete(path: string, handle: (ctx: any, next: any) => void) {
-        this.router.get(path, handle);
+        this.router.delete(path, handle);
     }
 }

@@ -14,6 +14,9 @@ import {
     Spinner
 } from '@shopify/polaris';
 
+import { Mutation } from 'react-apollo';
+import { PRODUCT_CREATE } from '../grapql-statements';
+
 
 interface State {
     guarantee: string,
@@ -84,40 +87,48 @@ class AnnotatedLayout extends React.Component<{}, State> {
                                 This setting is {' '} <TextStyle variation="strong">{ status }</TextStyle>
                             </SettingToggle>
                         </Layout.AnnotatedSection>
-                        <Layout.AnnotatedSection
-                            title="Import example product"
-                            description="Get the example product form the local server"
-                        >
-                            <Card sectioned>
-                                <Form onSubmit={this.handleImportProduct}>
-                                    <FormLayout>
-                                        <TextField 
-                                            id="totalProduct"
-                                            label="Total Product"
-                                            type="number"
-                                            value={`${total}`}
-                                            step={1}
-                                            min={1}
-                                            max={100}
-                                            onChange={this.handleTotalProductChange()}
-                                        />
-                                        {total != 0 && !total &&
-                                            <InlineError message="Total product is required" fieldID="totalProduct"/>
-                                        }
+                        <Mutation mutation={PRODUCT_CREATE}>
+                            {(importProduct) => {
+                                return (
+                                    <Layout.AnnotatedSection
+                                        title="Import example product"
+                                        description="Get the example product form the local server"
+                                    >
+                                        <Card sectioned>
+                                            <Form onSubmit={() => {
+                                                this.handleImportProduct(importProduct)
+                                            }}>
+                                                <FormLayout>
+                                                    <TextField
+                                                        id="totalProduct"
+                                                        label="Total Product"
+                                                        type="number"
+                                                        value={`${total}`}
+                                                        step={1}
+                                                        min={1}
+                                                        max={100}
+                                                        onChange={this.handleTotalProductChange()}
+                                                    />
+                                                    {total != 0 && !total &&
+                                                    <InlineError message="Total product is required" fieldID="totalProduct"/>
+                                                    }
 
-                                        <Stack distribution="trailing" alignment="center" spacing="tight">
-                                            {isLoading &&
-                                                <Spinner
-                                                    accessibilityLabel="Loading"
-                                                    color="teal"
-                                                    size="small"/>
-                                            }
-                                            <Button primary submit disabled={isLoading}>Import</Button>
-                                        </Stack>
-                                    </FormLayout>
-                                </Form>
-                            </Card>
-                        </Layout.AnnotatedSection>
+                                                    <Stack distribution="trailing" alignment="center" spacing="tight">
+                                                        {isLoading &&
+                                                        <Spinner
+                                                            accessibilityLabel="Loading"
+                                                            color="teal"
+                                                            size="small"/>
+                                                        }
+                                                        <Button primary submit disabled={isLoading}>Import</Button>
+                                                    </Stack>
+                                                </FormLayout>
+                                            </Form>
+                                        </Card>
+                                    </Layout.AnnotatedSection>
+                                );
+                            }}
+                        </Mutation>
                     </Layout>
                 </Page>
             </React.Fragment>
@@ -139,12 +150,28 @@ class AnnotatedLayout extends React.Component<{}, State> {
         this.setState(({ enabled }) => ({ enabled: !enabled }))
     }
 
-    handleImportProduct() {
+    handleImportProduct(importProduct) {
         this.setState({isLoading: true});
-        this.fetchExampleData().then((products) => {
-            setTimeout(() => {
+        const {total} = this.state;
+        this.fetchExampleData().then(async (products: Array<any>) => {
+            for (let i = 0, len = products.length; i < total && i < len -1; i++) {
+                const item = products[i];
+                await importProduct({
+                    variables: {
+                        input: {
+                            title: item.name,
+                            descriptionHtml: item.description,
+                            images: item.images.map(img => ({
+                                src: img.src,
+                                altText: img.type
+                            }))
+                        },
+                        media: []
+                    }
+                });
+
                 this.setState({isLoading: false});
-            }, 3000);
+            }
         });
     }
 
@@ -153,7 +180,8 @@ class AnnotatedLayout extends React.Component<{}, State> {
     }
 
     fetchExampleData() {
-        return fetch('http://localhost:3001/product').then((response) => {
+        // @ts-ignore
+        return fetch(`${SERVER_API}/product`).then((response) => {
             if (response.status >= 400) {
                 throw new Error('Bad response from server');
             }

@@ -1,5 +1,5 @@
 import { Product } from '../models';
-import { commerce, image } from 'faker';
+import { commerce, image, lorem, random } from 'faker';
 
 function isExistedData() {
     return new Promise((resolve, reject) => {
@@ -27,12 +27,14 @@ export async function importData() {
         for (let i = 0; i < 100; i++) {
             const item = new Product({
                 name: commerce.productName(),
+                price: commerce.price(100, 200, 2),
+                description: `<div>${new Array(random.number({min: 1, max: 4})).fill(null).map(e => `<p>${lorem.paragraph()}</p>`).join('')}</div>`,
                 images: [{
                     type: 'Thumbnail',
-                    src: `${image.food(200, 300)}?random=${Date.now()}`
+                    src: `${image.food(1024, 1024)}?random=${Date.now()}`
                 }]
             });
-            item.save(function (error, i) {
+            item.save(function (error) {
                 if (error) {
                     console.log(error);
                 } else {
