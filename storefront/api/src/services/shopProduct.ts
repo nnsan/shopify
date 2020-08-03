@@ -25,11 +25,11 @@ export class ShopProduct implements IShopProduct {
 
     getProducts(shop: string): Promise<any> {
         return new Promise((resolve, reject) => {
-            ShopProductModel.findOne({shopOrigin: shop}, (err, products) => {
+            ShopProductModel.findOne({shopOrigin: shop}, (err, product) => {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(products);
+                    resolve(product || {});
                 }
             })
         });

@@ -27,7 +27,16 @@ function run() {
         createShopifyAuth({
             apiKey: SHOPIFY_API_KEY,
             secret: SHOPIFY_API_SECRET_KEY,
-            scopes: ['read_products', 'write_products'],
+            scopes: [
+                'read_products', 'write_products',
+                'read_product_listings',
+                'read_locations',
+                'read_orders', 'write_orders',
+                'read_inventory', 'write_inventory',
+                'read_fulfillments', 'write_fulfillments',
+                'read_assigned_fulfillment_orders', 'write_assigned_fulfillment_orders',
+                'read_checkouts', 'write_checkouts'
+            ],
             afterAuth(ctx) {
                 const { shop, accessToken } = ctx.session;
 

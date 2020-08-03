@@ -164,7 +164,23 @@ class AnnotatedLayout extends React.Component<{}, State> {
                             images: item.images.map(img => ({
                                 src: img.src,
                                 altText: img.type
-                            }))
+                            })),
+                            productType: 'Food',
+                            variants:[{
+                                sku: `FOOD-${i}`,
+                                price: item.price,
+                                taxable: false,
+                                weight: 0.1,
+                                weightUnit: 'KILOGRAMS',
+                                inventoryItem: {
+                                    tracked: true,
+                                    cost: item.price - (item.price * 0.1)
+                                },
+                                inventoryQuantities: [{
+                                    availableQuantity: 10,
+                                    locationId: 'gid://shopify/Location/48914759845'
+                                }]
+                            }]
                         },
                         media: []
                     }

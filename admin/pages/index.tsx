@@ -24,7 +24,7 @@ class Index extends React.Component<{}, State> {
 
     componentDidMount() {
         this.getSavedProducts().then((data) => {
-            const productIds = (data.products && data.products.length > 0) ? data.products.map(p => p.id) : [];
+            const productIds = (data && data.products && data.products.length > 0) ? data.products.map(p => p.id) : [];
             this.setState({productIds: productIds});
         });
     }
@@ -46,6 +46,7 @@ class Index extends React.Component<{}, State> {
                     open={this.state.open}
                     resourceType="Product"
                     showVariants={false}
+                    initialSelectionIds={productIds.map(p => ({id: p}))}
                     onSelection={(resource) => {
                         this.handleSelection(resource)
                     }}
