@@ -16,5 +16,5 @@ export THEMEKIT_STORE=nashtechglobal.myshopify.com
 
 `ngrok http 3000`
 
-[Authentication url](https://e42d5525db44.ngrok.io/auth?shop=nashtechglobal.myshopify.com)
+[Authentication url](https://6aa26cfd6136.ngrok.io/auth?shop=nashtechglobal.myshopify.com)
 

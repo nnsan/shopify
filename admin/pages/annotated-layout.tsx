@@ -156,34 +156,38 @@ class AnnotatedLayout extends React.Component<{}, State> {
         this.fetchExampleData().then(async (products: Array<any>) => {
             for (let i = 0, len = products.length; i < total && i < len -1; i++) {
                 const item = products[i];
-                await importProduct({
-                    variables: {
-                        input: {
-                            title: item.name,
-                            descriptionHtml: item.description,
-                            images: item.images.map(img => ({
-                                src: img.src,
-                                altText: img.type
-                            })),
-                            productType: 'Food',
-                            variants:[{
-                                sku: `FOOD-${i}`,
-                                price: item.price,
-                                taxable: false,
-                                weight: 0.1,
-                                weightUnit: 'KILOGRAMS',
-                                inventoryItem: {
-                                    tracked: true,
-                                    cost: item.price - (item.price * 0.1)
-                                },
-                                inventoryQuantities: [{
-                                    availableQuantity: 10,
-                                    locationId: 'gid://shopify/Location/48914759845'
-                                }]
+                const variables = {
+                    input: {
+                        title: item.name,
+                        descriptionHtml: item.description,
+                        images: item.images.map(img => ({
+                            src: img.src,
+                            altText: img.type
+                        })),
+                        productType: 'Food',
+                        variants:[{
+                            sku: `FOOD-${i}`,
+                            price: item.price,
+                            taxable: false,
+                            weight: 0.1,
+                            weightUnit: 'KILOGRAMS',
+                            inventoryItem: {
+                                tracked: true,
+                                cost: item.price - (item.price * 0.1)
+                            },
+                            inventoryQuantities: [{
+                                availableQuantity: 10,
+                                locationId: 'gid://shopify/Location/48914759845'
                             }]
-                        },
-                        media: []
-                    }
+                        }]
+                    },
+                    media: []
+                };
+
+                console.log(JSON.stringify(variables));
+
+                await importProduct({
+                    variables: variables
                 });
 
                 this.setState({isLoading: false});

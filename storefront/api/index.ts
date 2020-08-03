@@ -31,6 +31,7 @@ function run() {
             .use(bodyParser())
             .use(helmet())
             .use(cors())
+            .use(middleWare.router.allowedMethods())
             .use(middleWare.router.routes());
 
         server.listen(port, async function () {
