@@ -39,3 +39,8 @@ ps aux | grep -v grep | grep mongod
 Bootstrap v4.5
 
 [Color palette](https://www.millionshade.com/color-palette-0036/)
+
+# angular build
+`@angular-builders/custom-webpack` work well with @angular/cli@9.1.4.
+
+`npm cache clean -f`. Remove `package-lock.json` and `node_modules` before run `npm i` to update package version

@@ -3,21 +3,19 @@ const webpack = require('webpack');
 const pkg = require('./package.json');
 
 module.exports = (config, options, targetOptions) => {
-  config.plugins.push(
+  console.log('Using extra webpack config', targetOptions);
+
+  config.plugins = config.plugins.concat([
     new webpack.DefinePlugin({
       APP_VERSION: JSON.stringify(pkg.version),
     })
-  );
+  ]);
 
-  config.resolve = {
-    ...config.resolve,
-    alias: {
-      ...config.resolve.alias,
-      Assets: path.resolve(__dirname, 'src/assets/')
-    }
+  // fixes WARNING Critical dependency: the request of a dependency is an expression
+  config.externals = {
+    ...config.externals,
+    mongoose: 'commonjs mongoose'
   };
-
-  console.log(config);
 
   return config;
 };
