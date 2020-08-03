@@ -306,7 +306,7 @@
       "price": "Hinta",
       "quantity": "Määrä",
       "total": "Yhteensä",
-      "fulfilled_at_html": "Huolinta suoritettu {{ date }}",
+      "fulfilled_at_html": "Jaeltu {{ date }}",
       "subtotal": "Välisumma",
       "track_shipment": "Seuraa lähetystä"
     },

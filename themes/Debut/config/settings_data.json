@@ -129,7 +129,7 @@
       "collection": {
         "type": "collection",
         "settings": {
-          "title": "Wedding Collection",
+          "title": "Our Recommendation",
           "collection": "frontpage",
           "grid": 3,
           "rows": 2,
@@ -143,7 +143,7 @@
           "image-bar-0": {
             "type": "image",
             "settings": {
-              "image": "shopify:\/\/shop_images\/homemade-2-tier-wedding-cake-2.jpg",
+              "image": "shopify:\/\/shop_images\/hotel-breakfast-room-service.jpg",
               "alignment": "center",
               "link": "",
               "cta_label": ""
@@ -152,7 +152,7 @@
           "image-bar-1": {
             "type": "image",
             "settings": {
-              "image": "shopify:\/\/shop_images\/hoa_hong.jpg",
+              "image": "shopify:\/\/shop_images\/download_1.jpeg",
               "alignment": "center",
               "link": "",
               "cta_label": ""
@@ -161,7 +161,7 @@
           "image-bar-2": {
             "type": "image",
             "settings": {
-              "image": "shopify:\/\/shop_images\/download.jpg",
+              "image": "shopify:\/\/shop_images\/red-orange-yellow-green-vegatables.jpg",
               "alignment": "center",
               "link": "",
               "cta_label": ""

@@ -8,15 +8,11 @@
 
 [The example online store](https://nashtechglobal.myshopify.com/)
 
-### Environment Variables
+### Requirement
 
-export THEMEKIT_PASSWORD=<the private app password>
-
-export THEMEKIT_THEME_ID=102946209957 
-
-export THEMEKIT_STORE=nashtechglobal.myshopify.com
-
-`source .env` to set temporary variable
+1. Environment Variables: **THEMEKIT_PASSWORD**=<the private app password>, **THEMEKIT_THEME_ID**=102946209957 , **THEMEKIT_STORE**=nashtechglobal.myshopify.com
+1. If using Mac and run `source .env` to set temporary variable
+1. Install Theme Kit - Command line tool as `theme`
 
 ### Main task
 
@@ -72,6 +68,7 @@ Requirement: Now we want to integrate the current web with the shopify buy/check
 #### Technical
 
 1. angular and angular-universal
+1. [Shopify JS Buy SDK](https://shopify.github.io/js-buy-sdk/)
 1. bootstrap
 1. scss
 
