@@ -1,8 +1,10 @@
 import { EmptyState, Page, Layout } from '@shopify/polaris';
 import { TitleBar, ResourcePicker } from '@shopify/app-bridge-react';
+import { Mutation } from 'react-apollo';
 import React from 'react';
 import Cookies from 'js-cookie';
 import ResourceListWithProducts from '../components/resource-list';
+import { PRODUCT_UPDATE } from '../grapql-statements';
 
 interface State {
     open: boolean,
@@ -42,16 +44,22 @@ class Index extends React.Component<{}, State> {
                         onAction: () => {this.setState({open: true})}
                     }}
                 />
-                <ResourcePicker
-                    open={this.state.open}
-                    resourceType="Product"
-                    showVariants={false}
-                    initialSelectionIds={productIds.map(p => ({id: p}))}
-                    onSelection={(resource) => {
-                        this.handleSelection(resource)
+                <Mutation mutation={PRODUCT_UPDATE}>
+                    {(updateProductTags) => {
+                        return (
+                            <ResourcePicker
+                                open={this.state.open}
+                                resourceType="Product"
+                                showVariants={false}
+                                initialSelectionIds={productIds.map(p => ({id: p}))}
+                                onSelection={(resource) => {
+                                    this.handleSelection(resource, updateProductTags);
+                                }}
+                                onCancel={() => this.setState({ open: false })}
+                            />
+                        );
                     }}
-                    onCancel={() => this.setState({ open: false })}
-                />
+                </Mutation>
                 {
                     emptyState ? (
                         <Layout>
@@ -77,8 +85,21 @@ class Index extends React.Component<{}, State> {
         )
     }
 
-    async handleSelection(resource) {
+    async handleSelection(resource, mutation) {
+        const FAST_DELIVERY = 'DELIVERY_IN_1_HOUR';
+
         await this.saveSelectedProducts(resource.selection);
+
+        for (const product of resource.selection) {
+            await mutation({
+                variables: {
+                    input: {
+                        id: product.id,
+                        tags: [...product.tags, FAST_DELIVERY]
+                    }
+                }
+            });
+        }
         this.setState({
             open: false,
             productIds: resource.selection.map(item => item .id)

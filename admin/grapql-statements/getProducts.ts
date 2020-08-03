@@ -8,6 +8,7 @@ export const GET_PRODUCTS = gql`
                 handle
                 descriptionHtml
                 id
+                tags
                 images(first: 1) {
                     edges {
                     node {
@@ -28,3 +29,5 @@ export const GET_PRODUCTS = gql`
         }
       }
   `;
+
+

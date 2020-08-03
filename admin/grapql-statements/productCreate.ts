@@ -6,6 +6,7 @@ export const PRODUCT_CREATE = gql`
             product {
               id
               title
+              handle
             }
         }
     }
