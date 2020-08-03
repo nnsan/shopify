@@ -1,8 +1,12 @@
 # shopify
 
-Development tool [link](https://shopify.dev/tools)
+## Tool and Docs
+
+1. Development tool [link](https://shopify.dev/tools)
 
 ## themes
+
+[The example online store](https://nashtechglobal.myshopify.com/)
 
 ### Environment Variables
 
