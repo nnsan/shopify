@@ -17,4 +17,4 @@ const ShopProductSchema = new mongoose.Schema({
     products: [ShopifyProductSchema]
 }, {timestamps: true});
 
-export const ShopProduct = mongoose.model('ShopProduct', ShopProductSchema, 'shopProducts');
+export const ShopProduct = mongoose.model('Shop_Product', ShopProductSchema);

@@ -79,7 +79,10 @@ class Index extends React.Component<{}, State> {
 
     async handleSelection(resource) {
         await this.saveSelectedProducts(resource.selection);
-        this.setState({open: false});
+        this.setState({
+            open: false,
+            productIds: resource.selection.map(item => item .id)
+        });
     }
 
     getSavedProducts() {
