@@ -16,6 +16,5 @@ function webhookConfig(router, webhook) {
         console.log('received webhook: ', ctx.state.webhook);
     });
 }
-module.exports = {
-    webhookConfig
-};
+
+export { webhookConfig };

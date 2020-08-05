@@ -1,20 +1,24 @@
-require('es6-promise').polyfill();
-require('isomorphic-fetch');
+import * as es6Promise from 'es6-promise';
+es6Promise.polyfill();
 
-const dotEnv = require('dotenv');
-const koa = require('koa');
-const next = require('next');
-const session = require('koa-session');
+import 'isomorphic-fetch';
+import * as dotenv from 'dotenv';
+import Koa from 'koa';
+import Router from 'koa-router';
+import Logger from 'koa-logger';
+import next from 'next';
+import Session from 'koa-session';
+import createShopifyAuth, * as koaShopifyAuth from '@shopify/koa-shopify-auth';
+import graphQLProxy, * as shopifyGraphqlProxy from '@shopify/koa-shopify-graphql-proxy';
+import * as shopifyWebhook from '@shopify/koa-shopify-webhooks';
 
-const { default: createShopifyAuth, verifyRequest } = require('@shopify/koa-shopify-auth');
-const { default: graphQLProxy, ApiVersion } = require('@shopify/koa-shopify-graphql-proxy');
-const Router = require('koa-router');
-const logger = require('koa-logger');
-const {receiveWebhook, registerWebhook} = require('@shopify/koa-shopify-webhooks');
-const {webhookConfig} = require('./webhookHandler');
+import { webhookConfig }  from "./webhookHandler.js";
 
-dotEnv.config();
+dotenv.config();
 
+const { receiveWebhook, registerWebhook } = shopifyWebhook;
+const ApiVersion = shopifyGraphqlProxy.ApiVersion;
+const verifyRequest = koaShopifyAuth.verifyRequest;
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -27,11 +31,11 @@ const {
 } = process.env;
 
 function run() {
-    const server = new koa();
+    const server = new Koa();
     const router = new Router();
 
-    // server.use(logger());
-    server.use(session({secure: true, sameSite: 'none'}, server));
+    // server.use(Logger());
+    server.use(Session({secure: true, sameSite: 'none'}, server));
     server.keys = [SHOPIFY_API_SECRET_KEY];
     server.use(
         createShopifyAuth({
@@ -92,15 +96,15 @@ function run() {
     webhookConfig(router, webhook);
 
     server.use(graphQLProxy({version: ApiVersion.July20}));
+    server.use(router.routes());
+    server.use(router.allowedMethods());
 
-    router.get('*', verifyRequest(), async (ctx) => {
+    server.use(async (ctx) => {
+        await verifyRequest();
         await handle(ctx.req, ctx.res);
         ctx.respond = false;
         ctx.res.statusCode = 200;
     });
-
-    server.use(router.allowedMethods());
-    server.use(router.routes());
 
     server.listen(port, () => {
         console.log(`> Ready on http://localhost:${port}`);

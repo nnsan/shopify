@@ -31,8 +31,8 @@ function run() {
             .use(bodyParser())
             .use(helmet())
             .use(cors())
-            .use(middleWare.router.allowedMethods())
-            .use(middleWare.router.routes());
+            .use(middleWare.router.routes())
+            .use(middleWare.router.allowedMethods());
 
         server.listen(port, async function () {
             console.log(`The server is runing at port ${port}`);
