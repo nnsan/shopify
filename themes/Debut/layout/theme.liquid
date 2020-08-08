@@ -40,15 +40,15 @@
   {% include 'social-meta-tags' %}
 
   {{ 'theme.scss.css' | asset_url | stylesheet_tag }}
-  {{ 'fast-delivery.scss.css' | asset_url | stylesheet_tag }}
+
+  {{ 'nashtech-training.scss.css' | asset_url | stylesheet_tag }}
 
   <script>
     var theme = {
       breakpoints: {
         medium: 750,
         large: 990,
-        widescreen: 1400
-      },
+        widescreen: 1400      },
       strings: {
         addToCart: {{ 'products.product.add_to_cart' | t | json }},
         soldOut: {{ 'products.product.sold_out' | t | json }},
