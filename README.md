@@ -8,9 +8,21 @@
 
 [The example online store](https://nashtechglobal.myshopify.com/)
 
+The config file values can be overridden by **environment variable** and environment variables can be overridden by command line flags
+
+### Environment Variables
+password	THEMEKIT_PASSWORD	 
+theme_id	THEMEKIT_THEME_ID	 
+store	THEMEKIT_STORE	 
+directory	THEMEKIT_DIRECTORY	 
+ignore_files	THEMEKIT_IGNORE_FILES	Use a ‘:’ as a pattern separator.
+ignores	THEMEKIT_IGNORES	Use a ‘:’ as a file path separator.
+proxy	THEMEKIT_PROXY	 
+timeout	THEMEKIT_TIMEOUT
+
 ### Requirement
 
-1. Environment Variables: **THEMEKIT_PASSWORD**=<the private app password>, **THEMEKIT_THEME_ID**=102946209957 , **THEMEKIT_STORE**=nashtechglobal.myshopify.com
+1. Environment Variables: **NASHTECH_PASSWORD**=<the private app password>, **NASHTECH_THEME_ID**=102946209957 , **NASHTECH_STORE**=nashtechglobal.myshopify.com
 1. If using Mac and run `source .env` to set temporary variable
 1. Install Theme Kit - Command line tool as `theme`
 
