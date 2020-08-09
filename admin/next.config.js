@@ -1,8 +1,8 @@
-import withCSS from '@zeit/next-css';
-import webpack from 'webpack';
+const withCSS = require('@zeit/next-css');
+const webpack = require('webpack');
+const dotenv = require('dotenv');
 
-import * as dotEnv from 'dotenv';
-dotEnv.config();
+dotenv.config();
 
 const apiKey =  JSON.stringify(process.env.SHOPIFY_API_KEY);
 const serverApi = JSON.stringify(process.env.SERVER_API);
