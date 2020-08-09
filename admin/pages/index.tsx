@@ -4,14 +4,19 @@ import { Mutation } from 'react-apollo';
 import React from 'react';
 import Cookies from 'js-cookie';
 import ResourceListWithProducts from '../components/resource-list';
-import { PRODUCT_UPDATE } from '../grapql-statements';
+import { PRODUCT_UPDATE, SEARCH_PRODUCTS_BY_TAG } from '../grapql-statements';
+import ApolloClientService from '../services/apolloClient';
 
 interface State {
     open: boolean,
     productIds: Array<string>
 }
 
+const FAST_DELIVERY = 'DELIVERY_IN_1_HOUR';
+
 class Index extends React.Component<{}, State> {
+    shopOrigin: string;
+    apolloClient: ApolloClientService;
 
     constructor(props) {
         super(props);
@@ -19,14 +24,17 @@ class Index extends React.Component<{}, State> {
             open: false,
             productIds: []
         };
+        this.shopOrigin = Cookies.get("shopOrigin");
+        this.apolloClient = new ApolloClientService();
 
         this.handleSelection = this.handleSelection.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this)
     }
 
     componentDidMount() {
-        this.getSavedProducts().then((data) => {
+        this.getSavedProducts().then((data: any) => {
             const productIds = (data && data.products && data.products.length > 0) ? data.products.map(p => p.id) : [];
+            console.log(productIds);
             this.setState({productIds: productIds});
         });
     }
@@ -86,8 +94,6 @@ class Index extends React.Component<{}, State> {
     }
 
     async handleSelection(resource, mutation) {
-        const FAST_DELIVERY = 'DELIVERY_IN_1_HOUR';
-
         await this.saveSelectedProducts(resource.selection);
 
         for (const product of resource.selection) {
@@ -107,19 +113,19 @@ class Index extends React.Component<{}, State> {
     }
 
     getSavedProducts() {
-        const shopOrigin = Cookies.get("shopOrigin");
-        // @ts-ignore
-        return fetch(`${SERVER_API}/shop-product/${shopOrigin}`).then((response: any) => {
-            if (response.status >= 400) {
-                throw new Error('Bad response from server');
-            }
+        return new Promise((resolve) => {
+            this.apolloClient.query(SEARCH_PRODUCTS_BY_TAG, {
+                query: `tag:${FAST_DELIVERY}`,
+                first: 100
+            }).then(result => {
+                const products = result.data.products.edges;
+                resolve({products: products.map(p => p.node)});
 
-            return response.json();
+            }).catch(e => {console.log(e)});
         });
     }
 
     saveSelectedProducts(products) {
-        const shopOrigin = Cookies.get("shopOrigin");
         // @ts-ignore
         return fetch(`${SERVER_API}/shop-product`, {
             method: 'POST',
@@ -128,7 +134,7 @@ class Index extends React.Component<{}, State> {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                shopOrigin: shopOrigin,
+                shopOrigin: this.shopOrigin,
                 products: products.map(item => { return {id: item.id, title: item.title}})
             })
         }).then((response: any) => {

@@ -13,19 +13,25 @@ import {
     InlineError,
     Spinner
 } from '@shopify/polaris';
+import Cookies from 'js-cookie';
 
-import { Mutation } from 'react-apollo';
-import { PRODUCT_CREATE } from '../grapql-statements';
+import { Mutation, Query } from 'react-apollo';
+import { PRODUCT_CREATE, SEARCH_PRODUCTS_BY_TAG } from '../grapql-statements';
+import ApolloClientService from '../services/apolloClient';
 
+const FAST_DELIVERY = 'DELIVERY_IN_1_HOUR';
 
 interface State {
     guarantee: string,
     enabled: boolean,
     total: number,
-    isLoading: boolean
+    isLoading: boolean,
+    taggedProductAmount: number
 }
 
 class AnnotatedLayout extends React.Component<{}, State> {
+    apolloClient: ApolloClientService;
+    shopOrigin: string;
 
     constructor(props) {
         super(props);
@@ -33,18 +39,23 @@ class AnnotatedLayout extends React.Component<{}, State> {
             guarantee: 'Change of defective products for free within one month of purchase',
             enabled: true,
             total: 10,
-            isLoading: false
+            isLoading: false,
+            taggedProductAmount: 0
         };
+
+        this.shopOrigin = Cookies.get("shopOrigin");
+        this.apolloClient = new ApolloClientService();
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleToggle = this.handleToggle.bind(this);
         this.handleImportProduct = this.handleImportProduct.bind(this);
         this.handleTotalProductChange = this.handleTotalProductChange.bind(this);
+        this.handleGetProduct = this.handleGetProduct.bind(this);
     }
 
     render() {
-        const {guarantee, enabled, total, isLoading} = this.state;
+        const {guarantee, enabled, total, isLoading, taggedProductAmount} = this.state;
         const status = enabled ? 'enabled': 'disabled';
         const doAction = enabled ? 'Disable': 'Enable';
 
@@ -87,6 +98,38 @@ class AnnotatedLayout extends React.Component<{}, State> {
                                 This setting is {' '} <TextStyle variation="strong">{ status }</TextStyle>
                             </SettingToggle>
                         </Layout.AnnotatedSection>
+                        <Query query={SEARCH_PRODUCTS_BY_TAG} variables={{query: `tag:${FAST_DELIVERY}`, first: 100}}>
+                            {(result) => {
+                                if (result.loading) {
+                                    return <div>Loading...</div>
+                                } else if (result.error) {
+                                    return <div>{result.error.message}</div>
+                                }
+
+                                const products = result.data.products.edges;
+
+                                return (
+                                    <Layout.AnnotatedSection
+                                        title="Search Product By tag"
+                                        description="This is example to build graph query by apollo client"
+                                    >
+                                        <Card sectioned>
+                                            <Form onSubmit={this.handleGetProduct}>
+                                                <FormLayout>
+                                                    <TextStyle>Total Products have tag: <TextStyle variation="strong">{FAST_DELIVERY}</TextStyle></TextStyle>
+                                                    <TextStyle variation="strong">Total: {taggedProductAmount || products.length}</TextStyle>
+                                                    <Stack distribution="trailing">
+                                                        <Button submit primary>Get Products</Button>
+                                                    </Stack>
+                                                </FormLayout>
+                                            </Form>
+                                        </Card>
+
+                                    </Layout.AnnotatedSection>
+                                )
+                            }}
+                        </Query>
+
                         <Mutation mutation={PRODUCT_CREATE}>
                             {(importProduct) => {
                                 return (
@@ -208,6 +251,18 @@ class AnnotatedLayout extends React.Component<{}, State> {
 
             return response.json()
         });
+    }
+
+    handleGetProduct() {
+        this.apolloClient.query(SEARCH_PRODUCTS_BY_TAG, {
+            query: `tag:${FAST_DELIVERY}`,
+            first: 100
+        }).then(result => {
+            const products = result.data.products.edges;
+            this.setState({taggedProductAmount: products.length});
+
+        }).catch(e => {console.log(e)})
+
     }
 }
 

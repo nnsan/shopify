@@ -5,18 +5,20 @@ import { AppProvider } from '@shopify/polaris';
 import { Provider } from '@shopify/app-bridge-react';
 import translations from '@shopify/polaris/locales/en.json';
 import Cookies from 'js-cookie';
-import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
+import ApolloClientService from '../services/apolloClient';
 
 import '@shopify/polaris/dist/styles.css';
 
-const client = new ApolloClient({
-    fetchOptions: {
-        credentials: "include"
-    }
-});
-
 class MyApp extends App {
+    apolloClient: ApolloClientService;
+
+    constructor(pros) {
+        super(pros);
+
+        this.apolloClient = new ApolloClientService();
+    }
+
     render() {
         const {Component, pageProps} = this.props;
         // @ts-ignore
@@ -30,7 +32,7 @@ class MyApp extends App {
                 </Head>
                 <AppProvider i18n={translations}>
                     <Provider config={config}>
-                        <ApolloProvider client={client}>
+                        <ApolloProvider client={this.apolloClient.client}>
                             <Component {...pageProps} />
                         </ApolloProvider>
                     </Provider>
