@@ -84,6 +84,11 @@ Requirement: Now we want to integrate the current web with the shopify buy/check
 1. bootstrap
 1. scss
 
+#### Referral
+1. [Component Style](https://angular.io/guide/component-styles)
+1. [CSS unit in media query px & em & rem](https://zellwk.com/blog/media-query-units/)
+1. [Angular Universal](https://angular.io/guide/universal)
+
 ## admin
 
 This is shopify custom application. That's used to illustrate how to setup an application

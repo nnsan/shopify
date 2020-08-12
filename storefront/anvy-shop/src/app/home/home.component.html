@@ -1,2 +1,5 @@
-<p>Hello World</p>
-<img class="logo-size" src="assets/logo.png">
+<div class="owl-carousel owl-theme">
+  <div class="item" *ngFor="let item of products">
+    <img [src]="item.images[0].src" [alt]="item.name">
+  </div>
+</div>

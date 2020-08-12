@@ -1,0 +1,32 @@
+$media-laptop: 992px;
+$headers: h1, h2, h3, h4, h5, h6;
+
+/* Override default variables of bootstrap */
+/* The $theme-colors will override $secondary or $primary */
+
+$theme-colors: (
+  "primary": #55CBD3,
+  "secondary": #C7DAC7
+);
+
+// Default font-size of the root element is 16px. If user change the appearance of font-size the value will be changed.
+// ex: the medium font-size is 16px. but the very large font-size is 24px.
+// If we use the unit is px the size of element will not be changed event though user change the setting.
+@function rem($px-value) {
+  @return #{$px-value/16px}rem;
+}
+@function em($px-value) {
+  @return #{$px-value/16px}em;
+}
+
+@mixin media-laptop {
+  @media screen and (min-width: em($media-laptop)) {
+    @content;
+  }
+}
+
+@each $header in $headers {
+  #{$header} {
+    color: map_get($theme-colors, 'primary');
+  }
+}

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'anvy-product',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProductComponent implements OnInit {
 
-  constructor() { }
+  products: Array<any>;
+  constructor(private httpClient: HttpClient) { }
 
   ngOnInit(): void {
+    this.getAllProducts().subscribe((data) => {
+      this.products = data;
+    })
   }
 
+  getAllProducts(): Observable<Array<any>> {
+    return this.httpClient.get<Array<any>>('/product');
+  }
 }
