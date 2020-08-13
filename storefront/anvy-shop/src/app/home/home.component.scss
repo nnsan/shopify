@@ -1,9 +1,40 @@
+.owl-carousel {
+  position: absolute;
+  height: calc(100% - 56px);
+  width: 100%;
+}
 .item {
+  height: 100%;
+  position: relative;
 
+  .desc-wrapper {
+    padding: 2rem;
+    position: absolute;
+    top: 50%;
+    left: 3rem;
+    width: 25%;
+    height: 17.4rem;
+
+    transform: translateY(-50%);
+    background-color: #ffe4c4;
+  }
+  .desc {
+    height: 100%;
+    overflow: hidden;
+  }
   img {
     height: 100%;
     width: auto;
-    margin-left: auto;
     margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+:host::ng-deep {
+  .owl-stage-outer {
+    height: calc(100% - 3rem);
+  }
+  .owl-stage, .owl-item {
+    height: 100%;
   }
 }

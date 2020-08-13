@@ -1,5 +1,8 @@
 <div class="owl-carousel owl-theme">
   <div class="item" *ngFor="let item of products">
     <img [src]="item.images[0].src" [alt]="item.name">
+    <div class="desc-wrapper">
+      <div class="desc" [innerHTML]="item.description"></div>
+    </div>
   </div>
 </div>

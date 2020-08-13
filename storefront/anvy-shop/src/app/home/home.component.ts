@@ -40,7 +40,8 @@ export class HomeComponent implements OnInit {
           this.carousel.owlCarousel({
             items: 1,
             margin: 0,
-            autoplay: true
+            autoplay: true,
+            loop: true
           });
         });
       });
