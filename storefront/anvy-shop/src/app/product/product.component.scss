@@ -1,10 +1,12 @@
 @import "~assets/_common";
 
 .introduce {
-  h2 {
+  margin-bottom: 3rem;
+
+  h2, .total {
     text-align: center;
     color: map_get($theme-colors, 'secondary');
-    margin-bottom: 3rem;
+
   }
 }
 .product-container {
@@ -39,6 +41,9 @@
           width: rem(400px);
         }
       }
+    }
+    .checkout-container {
+      margin-bottom: 1rem;
     }
   }
 }

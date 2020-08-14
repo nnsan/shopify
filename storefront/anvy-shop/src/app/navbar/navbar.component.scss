@@ -1,5 +1,27 @@
-.logo {
-  background: url("../../assets/logo.png") left 0 no-repeat;
-  background-size: auto 100%;
-  padding-left: 2em;
+@import "~assets/_common";
+
+.navbar {
+  .navbar-brand {
+    display: none;
+    @include media-laptop {
+      display: inline-block;
+    }
+
+    &.logo {
+      background: url("../../assets/logo.png") left 0 no-repeat;
+      background-size: auto 100%;
+      padding-left: 2em;
+    }
+  }
+
+  .cart-holder {
+    position: relative;
+    cursor: pointer;
+
+    .badge {
+      position: absolute;
+      right: 0;
+      transform: translate(50%, -20%);
+    }
+  }
 }

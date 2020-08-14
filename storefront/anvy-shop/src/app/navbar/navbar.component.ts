@@ -1,13 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, Event, NavigationEnd } from '@angular/router';
+import { CheckoutService } from '../services';
+import { Subscription } from 'rxjs';
+
+interface NavItem {
+  name: string,
+  path: string,
+  isActive: boolean
+}
 
 @Component({
   selector: 'anvy-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
-
+export class NavbarComponent implements OnInit, OnDestroy {
   navItems: Array<NavItem> = [
     {
       name: 'Product',
@@ -20,7 +27,18 @@ export class NavbarComponent implements OnInit {
       isActive: false
     }
   ];
-  constructor(private router: Router) { }
+
+  totalCheckoutItem: number;
+  subscriptions: Array<Subscription> = [];
+
+  constructor(private router: Router, private checkoutService: CheckoutService) {
+    this.totalCheckoutItem = 0;
+    const checkoutSubscription = this.checkoutService.cart.subscribe((total) => {
+      this.totalCheckoutItem = total;
+    });
+
+    this.subscriptions.push(checkoutSubscription);
+  }
 
   ngOnInit(): void {
     this.router.events.subscribe((_event: Event) => {
@@ -32,10 +50,12 @@ export class NavbarComponent implements OnInit {
       }
     })
   }
-}
 
-interface NavItem {
-  name: string,
-  path: string,
-  isActive: boolean
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  goCheckout() {
+    this.router.navigate(['checkout']);
+  }
 }

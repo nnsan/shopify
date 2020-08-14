@@ -1,15 +1,19 @@
 <div class="container">
   <div class="introduce">
     <h2>{{'All our products' | uppercase}}</h2>
+    <p class="total">Total {{total}} products</p>
   </div>
   <div class="product-container">
-    <div class="product" *ngFor="let item of products">
+    <div class="product" *ngFor="let item of products; trackBy: listTrackBy">
       <div class="avatar">
         <img [src]="item.images[0]?.src" [alt]="item.name">
       </div>
       <div class="info">
         <h3 class="product-name">{{item.name}}</h3>
         <p class="price">{{item.price | currency}}</p>
+        <div class="checkout-container">
+          <button class="btn btn-outline-primary" (click)="onAddToCart(item)">Add to Cart</button>
+        </div>
         <div [innerHTML]="item.description"></div>
       </div>
     </div>
