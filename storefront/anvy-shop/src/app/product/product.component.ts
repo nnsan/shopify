@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { ShopifyService, CheckoutService, StorageContentType } from '../services';
+import { ShopifyService, CheckoutService } from '../services';
 import { Product } from 'shopify-buy';
 
 @Component({
@@ -11,15 +11,17 @@ import { Product } from 'shopify-buy';
   styleUrls: ['./product.component.scss']
 })
 export class ProductComponent implements OnInit {
-
   products: Array<any>;
   total: number;
+  isLoaded: boolean;
 
   constructor(
     private httpClient: HttpClient,
     private shopifyService: ShopifyService,
     private checkoutService: CheckoutService
-  ) { }
+  ) {
+    this.isLoaded = false;
+  }
 
   ngOnInit(): void {
     this.products = [];
@@ -32,16 +34,17 @@ export class ProductComponent implements OnInit {
           description: item['descriptionHtml'],
           name: item.title,
           price: item.variants[0].price,
-          images: item.images
+          images: item.images,
+          variants: item.variants
         }
       });
 
       this.total = this.products.length;
+      this.isLoaded = true;
     })
   }
 
   getAllProducts(): Observable<Array<Product>> | any {
-    // return this.httpClient.get<Array<any>>('/product');
     return new Observable((subscriber) => {
       this.shopifyService.getAllProducts().then((products) => {
         subscriber.next(products);
@@ -51,7 +54,7 @@ export class ProductComponent implements OnInit {
   }
 
   onAddToCart(item: Product) {
-    this.checkoutService.addToCart(item);
+    this.checkoutService.addToCart(item.variants[0], 1);
   }
 
   listTrackBy(index: number, item: Product): string|number {

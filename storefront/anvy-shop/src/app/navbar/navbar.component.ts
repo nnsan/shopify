@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, Event, NavigationEnd } from '@angular/router';
-import { CheckoutService } from '../services';
+import { CheckoutService , CheckoutInterface} from '../services';
 import { Subscription } from 'rxjs';
 
 interface NavItem {
@@ -33,8 +33,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private checkoutService: CheckoutService) {
     this.totalCheckoutItem = 0;
-    const checkoutSubscription = this.checkoutService.cart.subscribe((total) => {
-      this.totalCheckoutItem = total;
+    const checkoutSubscription = this.checkoutService.cart.subscribe((checkout: CheckoutInterface) => {
+      if (checkout.lineItems) {
+        this.totalCheckoutItem = checkout.lineItems.length;
+      }
     });
 
     this.subscriptions.push(checkoutSubscription);

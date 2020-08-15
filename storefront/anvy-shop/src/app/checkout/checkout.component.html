@@ -1,1 +1,41 @@
-<p>checkout works!</p>
+<div class="cart-container container" *ngIf="isLoaded; else isLoading">
+  <div class="title">
+    <h3>Your Cart</h3>
+  </div>
+
+  <div *ngIf="cart && cart.lineItems.length > 0; else emptyBlock">
+    <ng-template ngFor let-lineItem [ngForOf]="cart.lineItems" let-isFirst="first" >
+      <div *ngIf="!isFirst" class="separator"></div>
+      <div class="line-item">
+        <div class="thumbnail">
+          <img class="img-thumbnail" [src]="lineItem.variant.image.src">
+        </div>
+        <div class="info">
+          <p>{{lineItem.title}}</p>
+        </div>
+        <div class="price">
+          <p>{{lineItem.quantity}} x {{lineItem.variant.price | currency}}</p>
+        </div>
+        <div class="total">
+          <p>{{(lineItem.quantity * lineItem.variant.price) | currency}}</p>
+        </div>
+      </div>
+    </ng-template>
+    <div class="separator"></div>
+    <div class="total-bill">
+      <label>Total</label>
+      <span class="amount">{{cart.totalPrice | currency}}</span>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary btn-lg btn-block" (click)="onCheckOut()">Check Out</button>
+    </div>
+  </div>
+  <ng-template #emptyBlock>
+    <div>
+      <p>Your card is empty. Do you want to <a href [routerLink]="'/product'">continue shop</a></p>
+    </div>
+  </ng-template>
+</div>
+<ng-template #isLoading>
+  <p>Loading...</p>
+</ng-template>

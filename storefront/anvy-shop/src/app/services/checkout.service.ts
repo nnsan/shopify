@@ -1,28 +1,82 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Product } from 'shopify-buy';
-import { StorageContentType, StorageService } from './index'
+import { Cart, LineItem, ProductVariant } from 'shopify-buy';
+import { ShopifyService, StorageContentType, StorageService } from './index';
+
+export interface CheckoutInterface {
+  id: string,
+  lineItems: Array<any>
+}
 
 @Injectable()
 export class CheckoutService {
-  private cartSubject = new BehaviorSubject<number>(0);
-  public cart: Observable<number>;
+  private cartSubject = new BehaviorSubject<CheckoutInterface | any>({});
+  public cart: Observable<CheckoutInterface>;
 
-  constructor(private storageService: StorageService) {
-    const existedItems = this.storageService.get(StorageContentType.checkout);
+  constructor(
+    private storageService: StorageService,
+    private shopifyService: ShopifyService
+  ) {
+    const checkoutItem = this.storageService.get(StorageContentType.checkout);
     this.cart = this.cartSubject;
-    this.cartSubject.next(existedItems.length);
+
+    if (checkoutItem.id) {
+      this.syncCheckout(checkoutItem);
+    } else {
+      this.cartSubject.next(checkoutItem);
+    }
   }
 
-  addToCart(item: Product) {
-    const existedItems = this.storageService.get(StorageContentType.checkout);
+  syncCheckout(checkoutItem) {
+    this.shopifyService.getCheckout(checkoutItem.id).then((checkout: Cart) => {
+      if (checkout['order']) {
+        this.storageService.delete(StorageContentType.checkout);
+        return;
+      }
 
-    if (!existedItems.includes(p => p.id === item.id)) {
-      existedItems.push({
-        id: item.id
+      const lineItems = checkout.lineItems.map((lineItem: LineItem) => {
+        return {
+          variantId: lineItem['variant'].id,
+          quantity: lineItem.quantity
+        }
       });
-      this.storageService.save(StorageContentType.checkout, existedItems);
-      this.cartSubject.next(existedItems.length);
+
+      const item = {
+        id: checkout.id,
+        lineItems
+      };
+
+      this.storageService.save(StorageContentType.checkout, item);
+      this.cartSubject.next(item);
+    });
+  }
+
+  addToCart(item: ProductVariant, quantity: number) {
+    const checkoutItem = this.storageService.get(StorageContentType.checkout);
+    const lineItems = checkoutItem.lineItems || [];
+
+    if (!lineItems.some(p => p.variantId === item.id)) {
+      lineItems.push({
+        variantId: item.id,
+        quantity: quantity
+      });
+
+      checkoutItem.lineItems = lineItems;
+
+      if (checkoutItem.id) {
+        this.shopifyService.updateCheckoutLineItems(checkoutItem.id, checkoutItem.lineItems).then((checkout) => {
+          if (checkout['order']) {
+            this.storageService.delete(StorageContentType.checkout);
+            return;
+          }
+
+          this.storageService.save(StorageContentType.checkout, checkoutItem);
+          this.cartSubject.next(checkoutItem);
+        });
+      } else {
+        this.storageService.save(StorageContentType.checkout, checkoutItem);
+        this.cartSubject.next(checkoutItem);
+      }
     }
   }
 }

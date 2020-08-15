@@ -21,7 +21,7 @@ export class StorageService {
 
     switch (contentType) {
       case StorageContentType.checkout:
-        result = Cookies.getJSON(`${this.prefix}_${contentType}`) || [];
+        result = Cookies.getJSON(`${this.prefix}_${contentType}`) || {};
         break;
       case StorageContentType.other:
         break;
@@ -29,5 +29,17 @@ export class StorageService {
         result = Cookies.get(`${this.prefix}_${contentType}`)
     }
     return result;
+  }
+
+  delete(contentType: StorageContentType) {
+    switch (contentType) {
+      case StorageContentType.checkout:
+        Cookies.remove(`${this.prefix}_${contentType}`);
+        break;
+      case StorageContentType.other:
+        break;
+      default:
+        console.log('There is no key');
+    }
   }
 }

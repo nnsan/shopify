@@ -1,0 +1,77 @@
+@import "~assets/_common";
+
+.title {
+  margin: 1.5rem 0;
+
+  @include media-laptop {
+    margin: 3rem 0;
+  }
+}
+.separator {
+  height: 1px;
+  background-color: #a0a0a0;
+  margin: 0.5rem 0;
+}
+.line-item {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+
+  @include media-laptop {
+    font-size: 100%;
+  }
+
+  .thumbnail, .info, .price {
+    margin-right: .5rem;
+
+    @include media-laptop {
+      margin-right: 1rem;
+    }
+  }
+
+  .thumbnail {
+    width: 3rem;
+    height: 3rem;
+
+    @include media-laptop {
+      width: 4rem;
+      height: 4rem;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .info {
+    width: 30%;
+    max-width: 20rem;
+  }
+
+  .price, .total {
+    flex: 1;
+  }
+
+  .price {
+    text-align: center;
+  }
+
+  .total {
+    text-align: right;
+  }
+}
+.total-bill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actions{
+  margin-top: 2rem;
+
+  @include media-laptop {
+    width: 10rem;
+    margin-left: auto;
+  }
+}

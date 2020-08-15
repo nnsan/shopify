@@ -1,6 +1,10 @@
 @import "~assets/_common";
 
 .navbar {
+  position: fixed;
+  width: 100%;
+  padding-right: 5rem;
+
   .navbar-brand {
     display: none;
     @include media-laptop {
@@ -14,6 +18,12 @@
     }
   }
 
+  .cart-container {
+    position: absolute;
+    right: 2rem;
+    top: 0;
+    transform: translateY(40%);
+  }
   .cart-holder {
     position: relative;
     cursor: pointer;
