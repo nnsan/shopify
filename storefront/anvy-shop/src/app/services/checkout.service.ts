@@ -52,7 +52,7 @@ export class CheckoutService {
   }
 
   addToCart(item: ProductVariant, quantity: number) {
-    const checkoutItem = this.storageService.get(StorageContentType.checkout);
+    let checkoutItem = this.storageService.get(StorageContentType.checkout);
     const lineItems = checkoutItem.lineItems || [];
 
     if (!lineItems.some(p => p.variantId === item.id)) {
@@ -67,11 +67,17 @@ export class CheckoutService {
         this.shopifyService.updateCheckoutLineItems(checkoutItem.id, checkoutItem.lineItems).then((checkout) => {
           if (checkout['order']) {
             this.storageService.delete(StorageContentType.checkout);
-            return;
+            checkoutItem = {
+              lineItems: [{
+                variantId: item.id,
+                quantity: quantity
+              }]
+            };
           }
 
           this.storageService.save(StorageContentType.checkout, checkoutItem);
           this.cartSubject.next(checkoutItem);
+
         });
       } else {
         this.storageService.save(StorageContentType.checkout, checkoutItem);
