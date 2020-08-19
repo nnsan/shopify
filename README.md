@@ -1,37 +1,46 @@
-# shopify
+# Overview
 
-## Tool and Docs
+This is source code for Shopify training. It includes 3 web applications and 1 shopify theme source.
 
-1. Development tool [link](https://shopify.dev/tools)
+The training have 4 sections which is: 
 
-## themes
+1. Shopify Overview
+1. Set up a store (demo theme structure and modify product liquid)
+1. Migrate to Shopify (demo the custom app and using it to import product to Shopify system)
+1. Custom Storefront (demo the angular website using storefront API to get data from Shopify)
+
+
+## themes (contains the theme resource of the store)
 
 [The example online store](https://nashtechglobal.myshopify.com/)
 
-The config file values can be overridden by **environment variable** and environment variables can be overridden by command line flags
+We will use the themekit tool to handle the theme resource and make some tasks like: download, deploy and publish.
 
-### Environment Variables
-password	THEMEKIT_PASSWORD	 
-theme_id	THEMEKIT_THEME_ID	 
-store	THEMEKIT_STORE	 
-directory	THEMEKIT_DIRECTORY	 
-ignore_files	THEMEKIT_IGNORE_FILES	Use a ‘:’ as a pattern separator.
-ignores	THEMEKIT_IGNORES	Use a ‘:’ as a file path separator.
-proxy	THEMEKIT_PROXY	 
-timeout	THEMEKIT_TIMEOUT
+With themekit tool the config file values can be overridden by **environment variable** and environment variables can be overridden by command line flags
 
-### Requirement
+###For setup environment variables we can set as below.
+`THEMEKIT_PASSWORD` take the password value
 
-1. Environment Variables: **NASHTECH_PASSWORD**=<the private app password>, **NASHTECH_THEME_ID**=102946209957 , **NASHTECH_STORE**=nashtechglobal.myshopify.com
+`THEMEKIT_THEME_ID` take the theme id value
+  
+`THEMEKIT_STORE` take the store url value
+ 
+`THEMEKIT_IGNORE_FILES` take the ignore files value. Use a ‘:’ as a pattern separator.
+
+For more information please refer this [link](https://shopify.github.io/themekit/configuration/)
+
+
+### To use the themekit tool to get store theme we need to set up some requirement value as below:
+
+1. Environment Variables: `NASHTECH_PASSWORD`, `NASHTECH_THEME_ID` , `NASHTECH_STORE`
 1. If using Mac and run `source .env` to set temporary variable
 1. Install Theme Kit - Command line tool as `theme`
 
-### Main task
+### Example code
 
-1. Custom the product detail page to show specific content base on **product tags**
-1. Demo for how [themekit](https://shopify.github.io/themekit/) tool work
+1. In product-template.liquid file. I already modify the product detail page to show specific content base on **product tags**
 
-### Technical
+### Technical using in example
 
 1. [liquid](https://shopify.dev/docs/themes/liquid/reference/basics) template language
 1. jquery
@@ -99,7 +108,7 @@ This is shopify custom application. That's used to illustrate how to setup an ap
 
 1. Run `npm run dev` to start local server at port 3000
 1. Using ngrok to forward the https request `ngrok http 3000`
-1. Using [Authentication url](https://00f92ca50edf.ngrok.io/auth?shop=nashtechglobal.myshopify.com) to install the custom application to specify store
+1. Using [Authentication url](https://b3b1d6e71d63.ngrok.io/auth?shop=nashtechglobal.myshopify.com) to install the custom application to specify store
 
 ### Main tasks
 
