@@ -3,7 +3,7 @@ const service = new ShopifyService.default({
     token: 'a2a3c61e2279ee3c67388d8a822b42b1'
 });
 
-ShopifyService.cart.subscribe((data) => {
+service.cart.observable.subscribe((data) => {
     console.log(data);
 });
 
@@ -24,7 +24,7 @@ function searchProductByTitle() {
 }
 
 function addToCart() {
-    ShopifyService.addToCart('Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTgyMTQ5ODg1OTY4NQ==', service).then((cart) => {
+    service.cart.addToCart('Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC8zNTgyMTQ5ODg1OTY4NQ==').then((cart) => {
         console.log(cart);
     }, (message) => {
         console.log(message);
@@ -32,7 +32,7 @@ function addToCart() {
 }
 
 function viewCart() {
-    ShopifyService.getCheckout(service).then((checkout) => {
+    service.cart.getCheckout().then((checkout) => {
         console.log(checkout);
     }, (message) => {
         console.log(message);
@@ -40,7 +40,7 @@ function viewCart() {
 }
 
 function checkout() {
-    ShopifyService.completeCheckout(service).then((checkout) => {
+    service.cart.completeCheckout().then((checkout) => {
         console.log(checkout);
         window.open(checkout['webUrl'], '_blank');
     }, (message) => {

@@ -3,8 +3,8 @@ es6Promise.polyfill();
 
 import 'isomorphic-fetch';
 import Client from 'shopify-buy/index.unoptimized.umd';
+import ShopifyCart from "./cart";
 
-export * from './cart';
 export default class ShopifyClient {
     constructor(config) {
         this.client = new Client.buildClient({
@@ -12,6 +12,8 @@ export default class ShopifyClient {
             storefrontAccessToken: config.token,
             apiVersion: config.apiVerison || '2020-07'
         }, fetch);
+
+        this.cart = new ShopifyCart(this);
 
         this.productSelectionSetBuilder = (product) => {
             product.add('handle');
