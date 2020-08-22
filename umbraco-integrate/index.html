@@ -3,10 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="dist/main.js"></script>
-    <script src="handler.js"></script>
+    <script type="module" src="dist/main.js"></script>
+    <script src="workshop.js" defer></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-<button onclick="onTest()">Test</button>
+<div class="container pt-5 pb-5">
+    <div class="mb-3">
+        <button class="btn btn-primary" onclick="getAllProducts()">Get All Product</button>
+        <p>Please open the console window to see result</p>
+    </div>
+    <div class="">
+        <button class="btn btn-primary" onclick="searchProductByTitle()">Search Product By Title</button>
+        <p>Please open the console window to see result</p>
+    </div>
+    <div class="">
+        <button class="btn btn-primary" onclick="addToCart()">Add To Cart</button>
+        <p>Please open the console window to see result</p>
+    </div>
+    <div class="">
+        <button class="btn btn-primary" onclick="viewCart()">View Cart</button>
+        <p>Please open the console window to see result</p>
+    </div>
+    <div class="">
+        <button class="btn btn-primary" onclick="checkout()">Checkout</button>
+        <p>Please open the console window to see result</p>
+    </div>
+</div>
 </body>
 </html>
