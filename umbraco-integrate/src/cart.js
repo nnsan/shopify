@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import * as storage from './storage';
 
-const cartSubject = new BehaviorSubject({});
+const cartSubject = new BehaviorSubject(storage.get());
 const cart = cartSubject.asObservable();
 
 export {
@@ -93,6 +93,8 @@ function getCheckout(shopifyClient) {
         if (cartStorage.checkoutId) {
             shopifyClient.getCheckout(cartStorage.checkoutId).then((checkout) => {
                 if (checkout['order']) {
+                    storage.remove();
+                    cartSubject.next({});
                     reject('The order has been created successful');
                 } else {
                     resolve(checkout);
@@ -121,6 +123,8 @@ function completeCheckout(shopifyClient) {
 
         shopifyClient.getCheckout(cartStorage.checkoutId).then(async (shopifyCheckout) => {
             if (shopifyCheckout['order']) {
+                storage.remove();
+                cartSubject.next({});
                 reject('The order has been created successful');
             } else {
                 shopifyClient.checkoutReplaceLineItems(cartStorage.checkoutId, cartStorage.variants).then((checkout) => {
