@@ -13,7 +13,7 @@ export default class ShopifyClient {
             apiVersion: config.apiVerison || '2020-07'
         }, fetch);
 
-        this.cart = new ShopifyCart(this);
+        this.cart = new ShopifyCart(this.client.checkout);
 
         this.productSelectionSetBuilder = (product) => {
             product.add('handle');
@@ -49,31 +49,6 @@ export default class ShopifyClient {
             first: pageSize || 12,
             query: titleSearch
         }, this.productSelectionSetBuilder);
-    }
-
-    getCheckout(checkoutId) {
-        return this.client.checkout.fetch(checkoutId);
-    }
-
-    createEmptyCheckout() {
-        const input = this.client.graphQLClient.variable('input', 'CheckoutCreateInput!');
-        const mutation = this.client.graphQLClient.mutation('CreateEmptyCheckout', [input], (root) => {
-            root.add('checkoutCreate', {args: {input}}, (checkoutCreatePayload) => {
-                checkoutCreatePayload.add('checkout', (checkout) => {
-                    checkout.add('id');
-                });
-            });
-        });
-
-        return this.client.graphQLClient.send(mutation, {input: {}});
-    }
-
-    checkoutAddLineItems(id, lineItems) {
-        return this.client.checkout.addLineItems(id, lineItems);
-    }
-
-    checkoutReplaceLineItems(id, lineItems) {
-        return this.client.checkout.replaceLineItems(id, lineItems);
     }
 
     fetchQueryRootData(connectionName, variables, selectionBuilder, operatorName) {

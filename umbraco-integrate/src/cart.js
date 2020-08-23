@@ -3,7 +3,7 @@ import * as storage from './storage';
 
 export default class ShopifyCart {
     constructor(shopifyClient) {
-        this.client = shopifyClient;
+        this.checkoutResource = shopifyClient;
         this.subject = new BehaviorSubject(storage.get());
         this.observable = this.subject.asObservable();
     }
@@ -13,12 +13,12 @@ export default class ShopifyCart {
             let cartStorage = storage.get();
 
             if (cartStorage.checkoutId) {
-                if (!this.client) {
+                if (!this.checkoutResource) {
                     console.log('error', 'shopifyClient is not found');
                     return;
                 }
 
-                this.client.getCheckout(cartStorage.checkoutId).then((cart) => {
+                this.fetchCheckout(cartStorage.checkoutId).then((cart) => {
                     if (cart['order'] || !cartStorage.variants) {
                         cartStorage = {
                             checkoutId: '',
@@ -76,7 +76,7 @@ export default class ShopifyCart {
 
     getCheckout() {
         return new Promise((resolve, reject) => {
-            if (!this.client) {
+            if (!this.checkoutResource) {
                 return;
             }
 
@@ -88,7 +88,7 @@ export default class ShopifyCart {
             }
 
             if (cartStorage.checkoutId) {
-                this.client.getCheckout(cartStorage.checkoutId).then((checkout) => {
+                this.fetchCheckout(cartStorage.checkoutId).then((checkout) => {
                     if (checkout['order']) {
                         storage.remove();
                         this.subject.next({});
@@ -98,11 +98,11 @@ export default class ShopifyCart {
                     }
                 });
             } else {
-                this.client.createEmptyCheckout().then((result) => {
+                this.createEmptyCheckout().then((result) => {
                     cartStorage.checkoutId = result.data.checkoutCreate.checkout.id;
                     storage.save(cartStorage);
 
-                    this.client.checkoutAddLineItems(cartStorage.checkoutId, cartStorage.variants).then(checkout => {
+                    this.checkoutAddLineItems(cartStorage.checkoutId, cartStorage.variants).then(checkout => {
                         resolve(checkout);
                     })
                 });
@@ -114,21 +114,46 @@ export default class ShopifyCart {
         const cartStorage = storage.get();
 
         return new Promise((resolve, reject) => {
-            if (!cartStorage.checkoutId || !this.client) {
+            if (!cartStorage.checkoutId || !this.checkoutResource) {
                 return;
             }
 
-            this.client.getCheckout(cartStorage.checkoutId).then(async (shopifyCheckout) => {
+            this.fetchCheckout(cartStorage.checkoutId).then(async (shopifyCheckout) => {
                 if (shopifyCheckout['order']) {
                     storage.remove();
                     this.subject.next({});
                     reject('The order has been created successful');
                 } else {
-                    this.client.checkoutReplaceLineItems(cartStorage.checkoutId, cartStorage.variants).then((checkout) => {
+                    this.checkoutReplaceLineItems(cartStorage.checkoutId, cartStorage.variants).then((checkout) => {
                         resolve(checkout);
                     });
                 }
             });
         });
+    }
+
+    fetchCheckout(checkoutId) {
+        return this.checkoutResource.fetch(checkoutId);
+    }
+
+    createEmptyCheckout() {
+        const input = this.checkoutResource.graphQLClient.variable('input', 'CheckoutCreateInput!');
+        const mutation = this.checkoutResource.graphQLClient.mutation('CreateEmptyCheckout', [input], (root) => {
+            root.add('checkoutCreate', {args: {input}}, (checkoutCreatePayload) => {
+                checkoutCreatePayload.add('checkout', (checkout) => {
+                    checkout.add('id');
+                });
+            });
+        });
+
+        return this.checkoutResource.graphQLClient.send(mutation, {input: {}});
+    }
+
+    checkoutAddLineItems(id, lineItems) {
+        return this.checkoutResource.addLineItems(id, lineItems);
+    }
+
+    checkoutReplaceLineItems(id, lineItems) {
+        return this.checkoutResource.replaceLineItems(id, lineItems);
     }
 }
