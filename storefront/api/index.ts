@@ -10,34 +10,46 @@ const helmet = require('koa-helmet');
 const cors = require('@koa/cors');
 const Koa = require('koa');
 
-const port = parseInt(process.env.PORT as string, 10) || 3001;
+require('dotenv-safe').config({
+    allowEmptyValues: true
+});
+
+const port = parseInt(process.env.PORT as string, 10);
 
 function run() {
+    if (process.env.DATABASE) {
+        mongoose.connect(process.env.DATABASE, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true
+        }).then(async () => {
+            startServer();
+            await importData();
+        });
+    } else {
+        console.log('Run with mock mode');
+        startServer();
+    }
+}
+
+function startServer() {
     const middleWare = container.get<any>(SERVICE_IDENTIFIER.ROUTER);
     const product = container.get<IProduct>(SERVICE_IDENTIFIER.PRODUCT);
     const shopProduct = container.get<IShopProduct>(SERVICE_IDENTIFIER.SHOP_PRODUCT);
 
     product.defineRoutes();
     shopProduct.defineRoutes();
+    const server = new Koa();
 
-    mongoose.connect('mongodb://localhost:27017/anvyShop', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true
-    }).then(() => {
-        const server = new Koa();
+    server.use(logger())
+        .use(bodyParser())
+        .use(helmet())
+        .use(cors())
+        .use(middleWare.router.routes())
+        .use(middleWare.router.allowedMethods());
 
-        server.use(logger())
-            .use(bodyParser())
-            .use(helmet())
-            .use(cors())
-            .use(middleWare.router.routes())
-            .use(middleWare.router.allowedMethods());
-
-        server.listen(port, async function () {
-            console.log(`The server is runing at port ${port}`);
-            await importData();
-        });
+    server.listen(port, async function () {
+        console.log(`The api server is running at port ${port}`);
     });
 }
 

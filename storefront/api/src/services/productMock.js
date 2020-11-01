@@ -1,4 +1,16 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,65 +50,53 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var identifiers_1 = __importDefault(require("./src/constant/identifiers"));
-var ioc_1 = __importDefault(require("./src/ioc"));
-var services_1 = require("./src/services");
-var mongoose = require('mongoose');
-var bodyParser = require('koa-bodyparser');
-var logger = require('koa-logger');
-var helmet = require('koa-helmet');
-var cors = require('@koa/cors');
-var Koa = require('koa');
-require('dotenv-safe').config({
-    allowEmptyValues: true
-});
-var port = parseInt(process.env.PORT, 10);
-function run() {
-    var _this = this;
-    if (process.env.DATABASE) {
-        mongoose.connect(process.env.DATABASE, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true
-        }).then(function () { return __awaiter(_this, void 0, void 0, function () {
+var inversify_1 = require("inversify");
+var identifiers_1 = __importDefault(require("../constant/identifiers"));
+var fs = __importStar(require("fs"));
+var path = __importStar(require("path"));
+var ProductMock = /** @class */ (function () {
+    function ProductMock(router) {
+        this.router = router;
+    }
+    ProductMock.prototype.defineRoutes = function () {
+        var _this = this;
+        this.router.get('/product', function (ctx, next) { return __awaiter(_this, void 0, void 0, function () {
+            var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        startServer();
-                        return [4 /*yield*/, services_1.importData()];
+                    case 0: return [4 /*yield*/, this.getAll()];
                     case 1:
-                        _a.sent();
+                        data = _a.sent();
+                        ctx.body = data;
                         return [2 /*return*/];
                 }
             });
         }); });
-    }
-    else {
-        console.log('Run with mock mode');
-        startServer();
-    }
-}
-function startServer() {
-    var middleWare = ioc_1.default.get(identifiers_1.default.ROUTER);
-    var product = ioc_1.default.get(identifiers_1.default.PRODUCT);
-    var shopProduct = ioc_1.default.get(identifiers_1.default.SHOP_PRODUCT);
-    product.defineRoutes();
-    shopProduct.defineRoutes();
-    var server = new Koa();
-    server.use(logger())
-        .use(bodyParser())
-        .use(helmet())
-        .use(cors())
-        .use(middleWare.router.routes())
-        .use(middleWare.router.allowedMethods());
-    server.listen(port, function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                console.log("The api server is running at port " + port);
-                return [2 /*return*/];
+    };
+    ProductMock.prototype.getAll = function () {
+        return new Promise(function (resolve, reject) {
+            var dataFile = path.join(process.cwd(), 'data.json');
+            fs.readFile(dataFile, 'utf8', function (err, data) {
+                if (err) {
+                    reject(err);
+                }
+                resolve(JSON.parse(data));
             });
         });
-    });
-}
-run();
+    };
+    ProductMock = __decorate([
+        inversify_1.injectable(),
+        __param(0, inversify_1.inject(identifiers_1.default.ROUTER)),
+        __metadata("design:paramtypes", [Object])
+    ], ProductMock);
+    return ProductMock;
+}());
+exports.ProductMock = ProductMock;

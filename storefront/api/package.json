@@ -5,28 +5,33 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node-dev index.ts"
+    "build": "tsc",
+    "start": "ts-node index.ts",
+    "start:mock": "cross-env DATABASE= ts-node index.ts",
+    "start:dev:mock": "cross-env DATABASE= ts-node-dev index.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@koa/cors": "^3.1.0",
-    "mongodb-client-encryption": "^1.1.0",
-    "mongoose": "^5.9.24",
+    "dotenv-safe": "^8.2.0",
     "faker": "^4.1.0",
-    "reflect-metadata": "^0.1.13",
     "inversify": "^5.0.1",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-helmet": "^5.2.0",
     "koa-logger": "^3.2.1",
-    "koa-router": "^9.1.0"
+    "koa-router": "^9.1.0",
+    "mongodb-client-encryption": "^1.1.0",
+    "mongoose": "^5.9.24",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/faker": "^4.1.12",
     "@types/koa-bodyparser": "^4.3.0",
     "@types/mongoose": "^5.7.34",
     "@types/node": "^14.0.23",
+    "cross-env": "^7.0.2",
     "typescript": "^3.9.7"
   }
 }
