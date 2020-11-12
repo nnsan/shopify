@@ -55,34 +55,44 @@ export class CheckoutService {
     let checkoutItem = this.storageService.get(StorageContentType.checkout);
     const lineItems = checkoutItem.lineItems || [];
 
-    if (!lineItems.some(p => p.variantId === item.id)) {
+    const existedItem = lineItems.find(lineItem => lineItem && lineItem.variantId === item.id);
+
+    if (existedItem) {
+      checkoutItem.lineItems = lineItems.map(lineItem => {
+        if (lineItem.variantId == item.id) {
+          lineItem.quantity = lineItem.quantity + 1;
+        }
+
+        return lineItem;
+      })
+    } else {
       lineItems.push({
         variantId: item.id,
         quantity: quantity
       });
 
       checkoutItem.lineItems = lineItems;
+    }
 
-      if (checkoutItem.id) {
-        this.shopifyService.updateCheckoutLineItems(checkoutItem.id, checkoutItem.lineItems).then((checkout) => {
-          if (checkout['order']) {
-            this.storageService.delete(StorageContentType.checkout);
-            checkoutItem = {
-              lineItems: [{
-                variantId: item.id,
-                quantity: quantity
-              }]
-            };
-          }
+    if (checkoutItem.id) {
+      this.shopifyService.updateCheckoutLineItems(checkoutItem.id, checkoutItem.lineItems).then((checkout) => {
+        if (checkout['order']) {
+          this.storageService.delete(StorageContentType.checkout);
+          checkoutItem = {
+            lineItems: [{
+              variantId: item.id,
+              quantity: quantity
+            }]
+          };
+        }
 
-          this.storageService.save(StorageContentType.checkout, checkoutItem);
-          this.cartSubject.next(checkoutItem);
-
-        });
-      } else {
         this.storageService.save(StorageContentType.checkout, checkoutItem);
         this.cartSubject.next(checkoutItem);
-      }
+
+      });
+    } else {
+      this.storageService.save(StorageContentType.checkout, checkoutItem);
+      this.cartSubject.next(checkoutItem);
     }
   }
 }

@@ -35,7 +35,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.totalCheckoutItem = 0;
     const checkoutSubscription = this.checkoutService.cart.subscribe((checkout: CheckoutInterface) => {
       if (checkout.lineItems) {
-        this.totalCheckoutItem = checkout.lineItems.length;
+        this.totalCheckoutItem = checkout.lineItems.reduce((acc, item) => {
+          if (item) {
+            acc = item.quantity + acc;
+          }
+          return acc;
+        }, 0);
       }
     });
 
