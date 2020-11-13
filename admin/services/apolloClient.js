@@ -5,7 +5,7 @@ class ApolloClientService {
 
     constructor() {
         this.client = new ApolloClient({
-            uri: `/graphql`,
+            uri: `${HOST}/graphql`,
             fetchOptions: {
                 credentials: "include"
             }

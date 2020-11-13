@@ -108,7 +108,7 @@ This is shopify custom application. That's used to illustrate how to setup an ap
 
 1. Run `npm run dev` to start local server at port 3000
 1. Using ngrok to forward the https request `ngrok http 3000`
-1. Using [Authentication url](https://4336a0c4567f.ngrok.io/auth?shop=nashtechglobal.myshopify.com) to install the custom application to specify store
+1. Using [Authentication url](https://stale-penguin-30.loca.lt/auth?shop=nashtechglobal.myshopify.com) to install the custom application to specify store
 
 ### Main tasks
 
